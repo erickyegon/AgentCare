@@ -127,6 +127,28 @@ export interface AuditEvent {
   created_at: string;
 }
 
+export interface Analytics {
+  totals: {
+    workflows: number;
+    patients: number;
+    appointments: number;
+    documents: number;
+    reminders: number;
+    escalations: number;
+    escalations_pending: number;
+    audit_events: number;
+    avg_steps_per_workflow: number;
+  };
+  workflows_by_status: Record<string, number>;
+  appointments_by_status: Record<string, number>;
+  escalations_by_category: Record<string, number>;
+  escalations_by_status: Record<string, number>;
+  documents_by_type: Record<string, number>;
+  reminders_by_type: Record<string, number>;
+  appointments_by_department: { department: string; count: number }[];
+  duplicate_documents: number;
+}
+
 export interface TraceEvent {
   type: "step" | "done" | "error" | "info";
   node?: string;

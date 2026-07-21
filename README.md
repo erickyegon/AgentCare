@@ -32,7 +32,9 @@ safety agent actively blocks clinical requests and escalates emergencies to staf
 | **Error handling / retry** | `tenacity` retries on LLM calls; graph error paths; failed-run status; resumable runs |
 | **Env config & secrets** | `pydantic-settings`; secrets only in gitignored `.env`; `.env.example` shipped |
 | **Synthetic data** | Idempotent seed: 10 departments, 18 doctors, 720 slots, demo users |
-| **Tests** | 19 pytest tests: RBAC, tools, safety boundary, end-to-end workflow |
+| **Tests** | 23 pytest tests: RBAC, tools, safety boundary, end-to-end workflow, analytics & reports |
+| **Analytics & reports** | Live staff analytics dashboard + downloadable per-run HTML reports (both computed from persisted data) |
+| **User guides** | In-app `/help` + [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md) (patient & staff) |
 
 ---
 
@@ -161,6 +163,9 @@ Patients can also self-register from the UI. The login screen has one-click demo
    the workflow and raises a **critical escalation** (no automated booking).
 4. Sign in as **staff** → **Escalations** → review the emergency, **Approve/Reject** with a note →
    the decision is persisted with your identity. Inspect the **Workflow** trace and **Audit log**.
+5. Open **Analytics** for live metrics, and hit **Report** on any workflow to download a printable
+   HTML summary built from the persisted records. Full walkthrough: [`docs/USER_GUIDE.md`](docs/USER_GUIDE.md)
+   (also in-app at `/help`).
 
 ---
 

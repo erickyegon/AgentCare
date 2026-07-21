@@ -53,6 +53,24 @@ export const api = {
     request<T>(path, { method: "POST", body: form }),
 };
 
+/** Download the HTML report for a run (auth header required, so we fetch + save a blob). */
+export async function downloadReport(runId: number): Promise<void> {
+  const token = getStoredToken();
+  const res = await fetch(`${API_V1}/workflows/${runId}/report`, {
+    headers: { Authorization: token ? `Bearer ${token}` : "" },
+  });
+  if (!res.ok) throw new ApiError("Could not generate report", res.status);
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `agentcare-run-${runId}.html`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 /**
  * Execute a workflow run and stream agent trace events over SSE.
  * Uses fetch (not EventSource) so we can send the Authorization header.

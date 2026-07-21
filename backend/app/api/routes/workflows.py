@@ -10,9 +10,12 @@ from __future__ import annotations
 import json
 
 from fastapi import APIRouter, Depends
+from fastapi.responses import HTMLResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sse_starlette.sse import EventSourceResponse
+
+from app.services.reports import render_workflow_report
 
 from app.api.deps import get_current_user
 from app.api.errors import AppError, ForbiddenError, NotFoundError
@@ -161,6 +164,22 @@ def get_steps(
             select(WorkflowStep).where(WorkflowStep.run_id == run_id)
             .order_by(WorkflowStep.sequence)
         )
+    )
+
+
+@router.get("/{run_id}/report", response_class=HTMLResponse)
+def workflow_report(
+    run_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)
+) -> HTMLResponse:
+    """Downloadable, self-contained HTML report for a run (owner or staff)."""
+    run = db.get(WorkflowRun, run_id)
+    if run is None:
+        raise NotFoundError("Workflow run not found")
+    _owns_or_staff(db, user, run)
+    html = render_workflow_report(db, run)
+    return HTMLResponse(
+        content=html,
+        headers={"Content-Disposition": f'attachment; filename="agentcare-run-{run_id}.html"'},
     )
 
 

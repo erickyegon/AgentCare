@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
-import { api, streamWorkflow } from "@/lib/api";
+import { api, downloadReport, streamWorkflow } from "@/lib/api";
 import type { TraceEvent, WorkflowRunDetail, WorkflowStep } from "@/lib/types";
 import { AgentTrace } from "@/components/AgentTrace";
 import { Badge, Button, Card, CardHeader, Spinner } from "@/components/ui";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 
 export default function RequestDetail() {
   const { id } = useParams<{ id: string }>();
@@ -45,7 +45,18 @@ export default function RequestDetail() {
       </Link>
 
       <Card>
-        <CardHeader title={`Request #${data.id}`} subtitle={data.thread_id} action={<Badge label={data.status} />} />
+        <CardHeader
+          title={`Request #${data.id}`}
+          subtitle={data.thread_id}
+          action={
+            <div className="flex items-center gap-2">
+              <Badge label={data.status} />
+              <Button variant="secondary" className="px-2 py-1 text-xs" onClick={() => downloadReport(data.id)}>
+                <Download className="h-3.5 w-3.5" /> Report
+              </Button>
+            </div>
+          }
+        />
         <div className="space-y-3 p-5">
           <p className="rounded-lg bg-slate-50 p-3 text-sm text-slate-700">“{data.request_text}”</p>
           {data.summary && (

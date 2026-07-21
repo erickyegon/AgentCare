@@ -1,13 +1,14 @@
 "use client";
 
 import { AppShell } from "@/components/AppShell";
-import { CalendarCheck, FileText, LayoutDashboard, Bell } from "lucide-react";
+import { CalendarCheck, FileText, HelpCircle, LayoutDashboard, Bell } from "lucide-react";
 
 const NAV = [
   { href: "/patient", label: "New request", icon: LayoutDashboard },
   { href: "/patient/appointments", label: "Appointments", icon: CalendarCheck },
   { href: "/patient/documents", label: "Documents", icon: FileText },
   { href: "/patient/reminders", label: "Reminders", icon: Bell },
+  { href: "/help", label: "Help", icon: HelpCircle },
 ];
 
 export default function PatientLayout({ children }: { children: React.ReactNode }) {

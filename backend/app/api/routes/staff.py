@@ -32,6 +32,7 @@ from app.schemas.clinical import (
     EscalationOut,
     WorkflowRunOut,
 )
+from app.services.analytics import compute_analytics
 from app.tools import cancel_appointment, resolve_escalation, write_audit
 
 router = APIRouter(prefix="/staff", tags=["staff"])
@@ -96,6 +97,12 @@ def decide_escalation(
     db.commit()
     db.refresh(escalation)
     return escalation
+
+
+@router.get("/analytics")
+def analytics(db: Session = Depends(get_db), _: User = Depends(require_staff)) -> dict:
+    """Live operational analytics aggregated from the database."""
+    return compute_analytics(db)
 
 
 @router.get("/audit", response_model=list[AuditEventOut])
