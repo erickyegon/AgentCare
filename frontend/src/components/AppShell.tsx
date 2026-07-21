@@ -59,7 +59,7 @@ export function AppShell({
                   active ? "bg-brand-50 text-brand-700" : "text-slate-600 hover:bg-slate-100",
                 )}
               >
-                <item.icon className="h-4.5 w-4.5" />
+                <item.icon className="h-4 w-4" />
                 {item.label}
               </Link>
             );

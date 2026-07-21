@@ -19,3 +19,41 @@ body {
 .scroll-thin::-webkit-scrollbar-thumb {
   @apply rounded-full bg-slate-300;
 }
+
+/* ============================================================================
+   Data-viz design tokens (validated palette, light surface — committed theme)
+   Series marks use the sequential-blue slot; status marks use the fixed status
+   palette. Text always wears ink tokens, never a series colour.
+   ============================================================================ */
+.viz {
+  --viz-surface: #ffffff;
+  --viz-ink: #1e293b;        /* slate-800 — matches app */
+  --viz-muted: #94a3b8;      /* axis/labels */
+  --viz-grid: #eef2f7;       /* hairline track */
+  --viz-baseline: #e2e8f0;
+
+  --series-1: #2a78d6;       /* sequential blue (validated) */
+  --series-1-soft: #dbeafe;
+
+  --status-good: #0ca30c;
+  --status-warning: #eab308; /* darkened warning for >=3:1 label contrast */
+  --status-critical: #d03b3b;
+  --status-neutral: #94a3b8;
+  --status-info: #2a78d6;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.skeleton {
+  @apply relative overflow-hidden rounded-md bg-slate-100;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s infinite;
+}
