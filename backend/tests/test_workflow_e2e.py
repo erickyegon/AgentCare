@@ -30,6 +30,11 @@ def test_cardiology_booking_end_to_end(client, fresh_patient_headers):
     appts = client.get("/api/v1/me/appointments", headers=fresh_patient_headers).json()
     assert any(a["status"] in ("confirmed", "rescheduled") for a in appts)
 
+    # The confirmation summary is composed from the persisted appointment (run linked to patient).
+    assert detail["patient_id"] is not None
+    code = next(a["confirmation_code"] for a in appts if a["confirmation_code"])
+    assert code in detail["summary"]
+
     # Reminders were scheduled.
     reminders = client.get("/api/v1/me/reminders", headers=fresh_patient_headers).json()
     assert len(reminders) >= 1

@@ -66,6 +66,7 @@ def persist_run_state(
     status: WorkflowStatus | None = None,
     summary: str | None = None,
     error: str | None = None,
+    patient_id: int | None = None,
 ) -> None:
     """Merge a patch into WorkflowRun.state and update run bookkeeping columns."""
     run = db.get(WorkflowRun, run_id)
@@ -81,5 +82,7 @@ def persist_run_state(
         run.summary = summary
     if error is not None:
         run.error = error
+    if patient_id is not None:
+        run.patient_id = patient_id  # link the run to its patient (used by summary/reminders)
     db.add(run)
     db.flush()

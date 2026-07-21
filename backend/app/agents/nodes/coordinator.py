@@ -64,7 +64,7 @@ def coordinator_node(state: WorkflowState) -> dict:
         )
         patch = {"patient": patient_res.data, "intent": intent.model_dump(), "patient_id": patient_id}
         persist_run_state(db, run_id=run_id, state_patch=patch, current_step="safety",
-                          status=WorkflowStatus.RUNNING)
+                          status=WorkflowStatus.RUNNING, patient_id=patient_id)
         db.commit()
 
     return {
@@ -81,21 +81,33 @@ def _compose_summary(db, run: WorkflowRun) -> str:
     lines: list[str] = []
     state = run.state or {}
 
-    if run.patient_id:
-        # Most recent appointment created for this patient in this workflow.
-        appt = db.scalar(
-            select(Appointment)
-            .where(Appointment.patient_id == run.patient_id)
-            .order_by(Appointment.id.desc())
-        )
-        if appt and state.get("appointment", {}).get("appointment_id") == appt.id:
+    appt_state = state.get("appointment", {})
+    appt_id = appt_state.get("appointment_id")
+    if appt_id and appt_state.get("result") != "awaiting_approval":
+        appt = db.get(Appointment, appt_id)
+        if appt is not None:
             doctor = db.get(Doctor, appt.doctor_id)
             slot = db.get(AppointmentSlot, appt.slot_id) if appt.slot_id else None
             when = slot.start_time.strftime("%a %d %b %Y, %H:%M UTC") if slot else "a scheduled time"
+            verb = {"cancel": "was cancelled", "reschedule": "was rescheduled"}.get(
+                appt_state.get("action"), "is " + appt.status.value
+            )
             lines.append(
                 f"✅ Appointment {appt.confirmation_code} with "
-                f"{doctor.name if doctor else 'your doctor'} is {appt.status.value} for {when}."
+                f"{doctor.name if doctor else 'your doctor'} {verb} for {when}."
             )
+    elif appt_state and not appt_state.get("skipped"):
+        # An appointment action was attempted but did not produce a booking.
+        result = appt_state.get("result") or appt_state.get("conflict")
+        friendly = {
+            "patient_double_booking": "you already have an appointment at that time",
+            "slot_taken": "the slot was just taken",
+            "no_slots": "no matching slots were available",
+            "no_availability": "no matching slots were available",
+            "awaiting_approval": "your cancellation needs staff approval and is pending",
+            "none": "no matching appointment was found",
+        }.get(str(result), "it could not be completed automatically")
+        lines.append(f"⚠️ The appointment request was not booked automatically — {friendly}.")
 
     docs = state.get("documents", {})
     if docs.get("processed"):
