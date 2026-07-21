@@ -1,0 +1,55 @@
+# AgentCare — full stack: PostgreSQL + FastAPI backend + Next.js frontend.
+# Copy .env.example to .env and set secrets (ANTHROPIC_API_KEY optional — the app
+# runs with the deterministic mock provider if it is absent). Then: `docker compose up --build`.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agentcare}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-agentcare}
+      POSTGRES_DB: ${POSTGRES_DB:-agentcare}
+    volumes:
+      - agentcare_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agentcare}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: ./backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg2://${POSTGRES_USER:-agentcare}:${POSTGRES_PASSWORD:-agentcare}@db:5432/${POSTGRES_DB:-agentcare}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      LLM_MODEL: ${LLM_MODEL:-claude-sonnet-5}
+      BACKEND_CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      SEED_DEFAULT_PASSWORD: ${SEED_DEFAULT_PASSWORD:-AgentCare!2026}
+      AUTO_INIT_DB: "true"
+      AUTO_SEED: "true"
+    volumes:
+      - agentcare_storage:/app/storage
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+
+volumes:
+  agentcare_pgdata:
+  agentcare_storage:

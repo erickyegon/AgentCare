@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.sqlite3
+*.db
+agentcare.db*
+storage/patient_*
+.pytest_cache/
+.ruff_cache/
+tests/
+.env
