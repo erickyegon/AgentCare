@@ -13,6 +13,10 @@ safety agent actively blocks clinical requests and escalates emergencies to staf
 > Built for the **AgentCare Build Challenge 2026**. Every layer is genuinely wired end-to-end:
 > **route → service → agent → tool → database → persisted result.**
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/erickyegon/AgentCare)
+
+📖 [User Guide](docs/USER_GUIDE.md) · 🏗️ [Architecture](docs/ARCHITECTURE.md) · 🚀 [Deployment](docs/DEPLOYMENT.md) · 🎬 [Demo Script](docs/DEMO_SCRIPT.md)
+
 ---
 
 ## ✨ Highlights
@@ -126,6 +130,11 @@ npm run dev
 ```
 
 Open http://localhost:3000.
+
+### Option C — Cloud (public URLs)
+
+Backend + Postgres on **Render** (one-click [`render.yaml`](render.yaml) blueprint) and the frontend
+on **Vercel**. Full steps in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
 ### Using real Claude
 

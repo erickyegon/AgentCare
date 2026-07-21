@@ -20,6 +20,7 @@ os.environ["LLM_PROVIDER"] = "mock"
 os.environ["ANTHROPIC_API_KEY"] = ""
 os.environ["AUTO_INIT_DB"] = "true"
 os.environ["AUTO_SEED"] = "true"
+os.environ["SEED_DEMO_WORKFLOWS"] = "false"  # deterministic tests: no pre-seeded runs
 os.environ["SEED_DEFAULT_PASSWORD"] = "TestPass!123"
 os.environ["SECRET_KEY"] = "test-secret-key"
 

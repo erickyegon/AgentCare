@@ -61,6 +61,20 @@ class Settings(BaseSettings):
     auto_init_db: bool = True
     # Seed synthetic data on startup if the database is empty.
     auto_seed: bool = True
+    # Also run a few demo requests through the real agent graph so the app/analytics
+    # look populated on first load. Disabled in tests for determinism.
+    seed_demo_workflows: bool = True
+
+    @field_validator("database_url")
+    @classmethod
+    def _normalize_db_url(cls, v: str) -> str:
+        # Managed Postgres providers (Render/Heroku/Railway) hand out `postgres://...`,
+        # which SQLAlchemy 2.0 no longer accepts. Normalize to the psycopg2 driver.
+        if v.startswith("postgres://"):
+            return "postgresql+psycopg2://" + v[len("postgres://"):]
+        if v.startswith("postgresql://") and "+psycopg" not in v:
+            return "postgresql+psycopg2://" + v[len("postgresql://"):]
+        return v
 
     @field_validator("backend_cors_origins")
     @classmethod

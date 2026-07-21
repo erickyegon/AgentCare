@@ -1,0 +1,46 @@
+# Render Blueprint — provisions the AgentCare backend + PostgreSQL in one click.
+# The Next.js frontend deploys to Vercel (see docs/DEPLOYMENT.md); after the API is live,
+# set NEXT_PUBLIC_API_URL (Vercel) and BACKEND_CORS_ORIGINS (this service) to each other's URLs.
+#
+# Deploy: https://dashboard.render.com → New → Blueprint → connect this repo.
+
+databases:
+  - name: agentcare-db
+    databaseName: agentcare
+    user: agentcare
+    plan: free
+
+services:
+  - type: web
+    name: agentcare-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: agentcare-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: LLM_PROVIDER
+        value: mock            # set to "anthropic" and add ANTHROPIC_API_KEY for real Claude
+      - key: ANTHROPIC_API_KEY
+        sync: false            # set in the dashboard (never committed)
+      - key: LLM_MODEL
+        value: claude-sonnet-5
+      - key: SEED_DEFAULT_PASSWORD
+        value: AgentCare!2026
+      - key: AUTO_INIT_DB
+        value: "true"
+      - key: AUTO_SEED
+        value: "true"
+      - key: SEED_DEMO_WORKFLOWS
+        value: "true"
+      # Set to your Vercel URL after the frontend is deployed (or "*" for a quick demo).
+      - key: BACKEND_CORS_ORIGINS
+        value: "*"

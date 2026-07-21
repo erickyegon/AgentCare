@@ -42,6 +42,16 @@ async def lifespan(app: FastAPI):
         if not has_data:
             counts = seed_all(create_tables=False)
             logger.info("Seeded synthetic data: %s", counts)
+
+        if settings.seed_demo_workflows:
+            try:
+                from app.db.seed_workflows import seed_demo_workflows
+
+                n = seed_demo_workflows()
+                if n:
+                    logger.info("Seeded %d demo workflow runs.", n)
+            except Exception as exc:  # never let demo seeding break startup
+                logger.warning("Demo workflow seeding skipped: %s", exc)
     yield
 
 
@@ -52,10 +62,13 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Auth uses Bearer tokens (not cookies), so a wildcard origin is safe when configured.
+_origins = settings.cors_origins
+_allow_all = "*" in _origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_origins=["*"] if _allow_all else _origins,
+    allow_credentials=not _allow_all,
     allow_methods=["*"],
     allow_headers=["*"],
 )

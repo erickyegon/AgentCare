@@ -98,7 +98,7 @@ def _get_or_create_doctor(db: Session, dept: Department, name: str) -> Doctor:
     return doc
 
 
-def _ensure_slots(db: Session, doctor: Doctor, days: int = 14) -> int:
+def _ensure_slots(db: Session, doctor: Doctor, days: int = 30) -> int:
     """Create available slots on business days for the next ``days`` days (idempotent)."""
     existing = db.scalar(
         select(func.count(AppointmentSlot.id)).where(AppointmentSlot.doctor_id == doctor.id)
