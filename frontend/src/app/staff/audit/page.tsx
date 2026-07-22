@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { AuditEvent } from "@/lib/types";
-import { Card, CardHeader, EmptyState, Spinner } from "@/components/ui";
+import { Card, CardHeader, EmptyState, SkeletonRows } from "@/components/ui";
 import { formatDateTime } from "@/lib/utils";
 
 export default function AuditPage() {
@@ -15,7 +15,7 @@ export default function AuditPage() {
       <Card>
         <CardHeader title="Immutable action trail" subtitle="Every agent and human action is recorded" />
         <div className="p-3">
-          {isLoading ? <div className="p-4"><Spinner /></div> : data && data.length > 0 ? (
+          {isLoading ? <SkeletonRows rows={8} /> : data && data.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead className="text-xs uppercase tracking-wide text-slate-400">

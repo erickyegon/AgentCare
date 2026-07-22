@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { Me } from "@/lib/types";
-import { Card, CardHeader, EmptyState, Spinner } from "@/components/ui";
+import { Card, CardHeader, EmptyState, SkeletonRows } from "@/components/ui";
 import { formatDateTime } from "@/lib/utils";
 
 export default function StaffPatients() {
@@ -15,7 +15,7 @@ export default function StaffPatients() {
       <Card>
         <CardHeader title="Registered patients" subtitle="Synthetic demonstration data" />
         <div className="p-3">
-          {isLoading ? <div className="p-4"><Spinner /></div> : data && data.length > 0 ? (
+          {isLoading ? <SkeletonRows rows={5} /> : data && data.length > 0 ? (
             <div className="divide-y divide-slate-100">
               {data.map((p) => (
                 <div key={p.id} className="flex items-center justify-between gap-4 px-3 py-3">

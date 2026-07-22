@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { api } from "@/lib/api";
 import type { WorkflowRun } from "@/lib/types";
-import { Badge, Card, CardHeader, EmptyState, Spinner } from "@/components/ui";
+import { Badge, Card, CardHeader, EmptyState, SkeletonRows } from "@/components/ui";
 import { formatDateTime } from "@/lib/utils";
 
 const FILTERS = ["all", "completed", "escalated", "failed", "pending"];
@@ -34,7 +34,7 @@ export default function StaffWorkflows() {
       <Card>
         <CardHeader title="All workflow runs" />
         <div className="p-3">
-          {isLoading ? <div className="p-4"><Spinner /></div> : data && data.length > 0 ? (
+          {isLoading ? <SkeletonRows rows={6} /> : data && data.length > 0 ? (
             <div className="divide-y divide-slate-100">
               {data.map((r) => (
                 <Link key={r.id} href={`/staff/workflows/${r.id}`} className="flex items-center justify-between gap-4 px-3 py-3 hover:bg-slate-50">

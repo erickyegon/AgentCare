@@ -252,6 +252,38 @@ export function ChartCard({
   );
 }
 
+/* --------------------------------------------------- Agent pipeline flow */
+
+const PIPELINE: { icon: string; label: string; tint: string }[] = [
+  { icon: "🧭", label: "Coordinator", tint: "var(--series-1-soft)" },
+  { icon: "🛡️", label: "Safety", tint: "#fee2e2" },
+  { icon: "🔀", label: "Routing", tint: "#fef3c7" },
+  { icon: "📅", label: "Appointment", tint: "#ccfbf1" },
+  { icon: "📄", label: "Document", tint: "#ede9fe" },
+  { icon: "🔔", label: "Follow-up", tint: "#d1fae5" },
+];
+
+export function AgentPipeline() {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {PIPELINE.map((s, i) => (
+        <div key={s.label} className="flex items-center gap-1.5">
+          <div
+            className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 shadow-sm"
+            title={`${s.label} agent`}
+          >
+            <span className="grid h-6 w-6 place-items-center rounded-lg text-sm" style={{ background: s.tint }}>
+              {s.icon}
+            </span>
+            <span className="text-xs font-medium text-slate-700">{s.label}</span>
+          </div>
+          {i < PIPELINE.length - 1 && <span className="text-slate-300">→</span>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 /* ----------------------------------------------------------- Skeletons */
 
 export function ChartSkeleton() {

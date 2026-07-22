@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
 import { api } from "@/lib/api";
 import type { PatientDocument } from "@/lib/types";
-import { Badge, Button, Card, CardHeader, EmptyState, Spinner } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, EmptyState, SkeletonRows } from "@/components/ui";
 import { formatDateTime } from "@/lib/utils";
 import { FileUp } from "lucide-react";
 
@@ -38,7 +38,7 @@ export default function DocumentsPage() {
         <CardHeader title="Documents" subtitle="Classified and de-duplicated by the Document agent" />
         <div className="p-3">
           {isLoading ? (
-            <div className="p-4"><Spinner /></div>
+            <SkeletonRows rows={4} />
           ) : data && data.length > 0 ? (
             <div className="divide-y divide-slate-100">
               {data.map((d) => (

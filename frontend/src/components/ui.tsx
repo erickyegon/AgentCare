@@ -96,6 +96,34 @@ export function Spinner({ label }: { label?: string }) {
   );
 }
 
+/* ---- Skeletons (loading placeholders) ---- */
+
+export function SkeletonTiles({ count = 4 }: { count?: number }) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="skeleton h-24 rounded-2xl" />
+      ))}
+    </div>
+  );
+}
+
+export function SkeletonRows({ rows = 5 }: { rows?: number }) {
+  return (
+    <div className="divide-y divide-slate-100">
+      {Array.from({ length: rows }).map((_, i) => (
+        <div key={i} className="flex items-center justify-between gap-4 px-3 py-3.5">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="skeleton h-3.5" style={{ width: `${70 - i * 6}%` }} />
+            <div className="skeleton h-2.5 w-24" />
+          </div>
+          <div className="skeleton h-5 w-16 rounded-full" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function EmptyState({ title, hint }: { title: string; hint?: string }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 py-10 text-center">

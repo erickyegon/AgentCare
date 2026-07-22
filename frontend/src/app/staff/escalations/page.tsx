@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "@/lib/api";
 import type { Escalation } from "@/lib/types";
-import { Badge, Button, Card, CardHeader, EmptyState, Input, Spinner } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, EmptyState, Input, SkeletonRows } from "@/components/ui";
 import { formatDateTime } from "@/lib/utils";
 
 const FILTERS = ["pending", "approved", "rejected", "all"];
@@ -46,7 +46,7 @@ export default function EscalationsPage() {
       </div>
 
       {isLoading ? (
-        <div className="p-6"><Spinner /></div>
+        <Card><div className="p-2"><SkeletonRows rows={4} /></div></Card>
       ) : data && data.length > 0 ? (
         <div className="space-y-3">
           {data.map((e) => (

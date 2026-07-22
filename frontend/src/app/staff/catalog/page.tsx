@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { api } from "@/lib/api";
 import type { Department } from "@/lib/types";
-import { Button, Card, CardHeader, EmptyState, Input, Spinner } from "@/components/ui";
+import { Button, Card, CardHeader, EmptyState, Input, SkeletonRows } from "@/components/ui";
 
 export default function CatalogPage() {
   const qc = useQueryClient();
@@ -41,7 +41,7 @@ export default function CatalogPage() {
       <Card>
         <CardHeader title="Active departments" />
         <div className="p-3">
-          {isLoading ? <div className="p-4"><Spinner /></div> : data && data.length > 0 ? (
+          {isLoading ? <SkeletonRows rows={4} /> : data && data.length > 0 ? (
             <div className="grid gap-2 p-2 sm:grid-cols-2">
               {data.map((d) => (
                 <div key={d.id} className="rounded-lg border border-slate-200 p-3">

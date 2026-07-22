@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import type { Reminder } from "@/lib/types";
-import { Badge, Card, CardHeader, EmptyState, Spinner } from "@/components/ui";
+import { Badge, Card, CardHeader, EmptyState, SkeletonRows } from "@/components/ui";
 import { formatDateTime, titleCase } from "@/lib/utils";
 import { Bell } from "lucide-react";
 
@@ -20,7 +20,7 @@ export default function RemindersPage() {
         <CardHeader title="Scheduled by the Follow-up agent" />
         <div className="p-3">
           {isLoading ? (
-            <div className="p-4"><Spinner /></div>
+            <SkeletonRows rows={4} />
           ) : data && data.length > 0 ? (
             <div className="divide-y divide-slate-100">
               {data.map((r) => (

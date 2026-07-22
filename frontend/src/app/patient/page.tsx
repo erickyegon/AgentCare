@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 import { api, streamWorkflow } from "@/lib/api";
 import type { PatientDocument, TraceEvent, WorkflowRun, WorkflowRunDetail, WorkflowStep } from "@/lib/types";
 import { AgentTrace } from "@/components/AgentTrace";
-import { Badge, Button, Card, CardHeader, EmptyState, Spinner, Textarea } from "@/components/ui";
+import { Badge, Button, Card, CardHeader, EmptyState, SkeletonRows, Textarea } from "@/components/ui";
 import { formatDateTime } from "@/lib/utils";
 import { FileUp, Send, Sparkles } from "lucide-react";
 
@@ -184,7 +184,7 @@ export default function PatientDashboard() {
         <CardHeader title="Recent requests" />
         <div className="p-3">
           {runsQuery.isLoading ? (
-            <div className="p-4"><Spinner /></div>
+            <SkeletonRows rows={3} />
           ) : runsQuery.data && runsQuery.data.length > 0 ? (
             <div className="divide-y divide-slate-100">
               {runsQuery.data.map((run) => (
